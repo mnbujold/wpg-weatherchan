@@ -4,6 +4,7 @@
 from tkinter import *
 import time
 import datetime
+import env_canada
 # from datetime import datetime
 import asyncio # for env_canada
 import textwrap # used to format forecast text
@@ -580,7 +581,9 @@ def bottom_marquee(grouptotal):
     for r in range(width): #create an empty string of 35 characters
         pad = pad + " " 
 
-    url = "https://winnipeg.ctvnews.ca/rss/winnipeg"
+    #url = "https://winnipeg.ctvnews.ca/rss/winnipeg"
+    #url = "http://rebelnews.com/news.rss"
+    url = "http://globalnews.ca/edmonton/feed"
     wpg = feedparser.parse(url)
     debug_msg("BOTTOM_MARQUEE-RSS feed refreshed",1)
 
@@ -645,19 +648,20 @@ def playlist_generator(musicpath):
     # names in the given directory 
 
     debug_msg("PLAYLIST_GENERATOR-searching for music files...",1)
-    filelist = os.listdir(musicpath)
-    allFiles = list()
+    #filelist = os.listdir(musicpath)
+    #allFiles = list()
     # Iterate over all the entries    
-    for entry in filelist:
+    #for entry in filelist:
         # Create full path
-        fullPath = os.path.join(musicpath,entry)
+    #    fullPath = os.path.join(musicpath,entry)
         # If entry is a directory then get the list of files in this directory 
-        if os.path.isdir(fullPath):
-            allFiles = allFiles + playlist_generator(fullPath)
-        else:
-            allFiles.append(fullPath)
-    debug_msg(("PLAYLIST_GENERATOR-found " + str(len(allFiles))),1)
-    return allFiles
+    #    if os.path.isdir(fullPath):
+    #        allFiles = allFiles + playlist_generator(fullPath)
+    #    else:
+    #        allFiles.append(fullPath)
+    #debug_msg(("PLAYLIST_GENERATOR-found " + str(len(allFiles))),1)
+    #return allFiles
+    return 0
 
 # DEF play background music
 def music_player(songNumber, playlist, musicpath):
@@ -814,7 +818,7 @@ weather_update(0) # update all cities
 
 # Middle Section (Cycling weather pages, every 30sec)
 debug_msg("ROOT-launching weather_page",1)
-PageColour = "00006D" # blue
+PageColour = "#00006D" # blue
 PageNum = 1
 weather_page(PageColour, PageNum)
 
@@ -822,13 +826,13 @@ weather_page(PageColour, PageNum)
 debug_msg("ROOT-launching playlist generator",1)
 musicpath = "/home/probnot/WeatherPi/music" # must show full path
 playlist = playlist_generator(musicpath) # generate playlist array
-random.shuffle(playlist) # shuffle playlist
+#random.shuffle(playlist) # shuffle playlist
 
 # Play background music on shuffle using pygame
 debug_msg("ROOT-launching background music",1)
 songNumber = 1
 pygame.mixer.init()
-music_player(songNumber, playlist, musicpath)
+#music_player(songNumber, playlist, musicpath)
 
 # Bottom Scrolling Text (City of Winnipeg RSS Feed)
 debug_msg("ROOT-launching bottom_marquee",1)
