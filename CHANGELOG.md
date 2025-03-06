@@ -1,4 +1,4 @@
-# Changelog for `weatherchan`
+# Changelog for `wpg-weatherchan`
 
 ## 2.0.9 [2024-02-11]
 - Fixed bug that has old blue colour upon launch (line 817), also changed blue to 0x00006D as noted in 2.0.8 but missed
