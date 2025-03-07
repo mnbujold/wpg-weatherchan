@@ -17,6 +17,8 @@ import random # for background music
 import os # for background music
 import re # for word shortener
 
+musicpath = "/home/mikeb/Music" # must show full path
+
 prog = "wpg-weather"
 ver = "2.0.9"
 # 2.0.9 [2024-02-11]
@@ -226,7 +228,8 @@ def weather_page(PageColour, PageNum):
         temp_cur = str(ec_en_wpg.conditions["temperature"]["value"]) 
         temp_high = str(ec_en_wpg.conditions["high_temp"]["value"])
         temp_low = str(ec_en_wpg.conditions["low_temp"]["value"])
-       
+        # TODO Appears high_temp_yesterday et al. are no longer supported
+        """
         if ("value" in ec_en_wpg.conditions["high_temp_yesterday"] and ec_en_wpg.conditions["high_temp_yesterday"]["value"] != None):    
             temp_yest_high =str(round(ec_en_wpg.conditions["high_temp_yesterday"]["value"]))
         else:
@@ -236,7 +239,9 @@ def weather_page(PageColour, PageNum):
             temp_yest_low =str(round(ec_en_wpg.conditions["low_temp_yesterday"]["value"]))
         else:
             temp_yest_low = ""       
-        
+        """
+        temp_yest_high = ""
+        temp_yest_low = ""
         temp_norm_high =str(ec_en_wpg.conditions["normal_high"]["value"])
         temp_norm_low =str(ec_en_wpg.conditions["normal_low"]["value"])      
 
@@ -432,7 +437,8 @@ def weather_page(PageColour, PageNum):
         fln_precip = (str(ec_en_fln.conditions["pop"]["value"]) + " %") if ec_en_fln.conditions["pop"] and ec_en_fln.conditions["pop"]["value"] != None else "NIL"
         thm_precip = (str(ec_en_thm.conditions["pop"]["value"]) + " %") if ec_en_thm.conditions["pop"] and ec_en_thm.conditions["pop"]["value"] != None else "NIL"
         chu_precip = (str(ec_en_chu.conditions["pop"]["value"]) + " %") if ec_en_chu.conditions["pop"] and ec_en_chu.conditions["pop"]["value"] != None else "NIL"
-        yest_precip = (str(ec_en_wpg.conditions["precip_yesterday"]["value"]) + " MM") if ec_en_wpg.conditions["precip_yesterday"] and ec_en_wpg.conditions["precip_yesterday"]["value"] != None else "0.0 MM"
+        yest_precip = ""
+        #yest_precip = (str(ec_en_wpg.conditions["precip_yesterday"]["value"]) + " MM") if ec_en_wpg.conditions["precip_yesterday"] and ec_en_wpg.conditions["precip_yesterday"]["value"] != None else "0.0 MM"
     
         # create 8 lines of text   
         s1 = ("MANITOBA PRECIPITATION FORECAST").center(35," ")
@@ -648,19 +654,19 @@ def playlist_generator(musicpath):
     # names in the given directory 
 
     debug_msg("PLAYLIST_GENERATOR-searching for music files...",1)
-    #filelist = os.listdir(musicpath)
-    #allFiles = list()
+    filelist = os.listdir(musicpath)
+    allFiles = list()
     # Iterate over all the entries    
-    #for entry in filelist:
+    for entry in filelist:
         # Create full path
-    #    fullPath = os.path.join(musicpath,entry)
+        fullPath = os.path.join(musicpath,entry)
         # If entry is a directory then get the list of files in this directory 
-    #    if os.path.isdir(fullPath):
-    #        allFiles = allFiles + playlist_generator(fullPath)
-    #    else:
-    #        allFiles.append(fullPath)
-    #debug_msg(("PLAYLIST_GENERATOR-found " + str(len(allFiles))),1)
-    #return allFiles
+        if os.path.isdir(fullPath):
+            allFiles = allFiles + playlist_generator(fullPath)
+        else:
+            allFiles.append(fullPath)
+    debug_msg(("PLAYLIST_GENERATOR-found " + str(len(allFiles))),1)
+    return allFiles
     return 0
 
 # DEF play background music
@@ -824,7 +830,6 @@ weather_page(PageColour, PageNum)
 
 # Generate background music playlist
 debug_msg("ROOT-launching playlist generator",1)
-musicpath = "/home/probnot/WeatherPi/music" # must show full path
 playlist = playlist_generator(musicpath) # generate playlist array
 #random.shuffle(playlist) # shuffle playlist
 
@@ -832,7 +837,7 @@ playlist = playlist_generator(musicpath) # generate playlist array
 debug_msg("ROOT-launching background music",1)
 songNumber = 1
 pygame.mixer.init()
-#music_player(songNumber, playlist, musicpath)
+music_player(songNumber, playlist, musicpath)
 
 # Bottom Scrolling Text (City of Winnipeg RSS Feed)
 debug_msg("ROOT-launching bottom_marquee",1)
