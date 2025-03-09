@@ -66,6 +66,7 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
         pop = str(locale.conditions["pop"]["value"]) if locale.conditions["pop"] and locale.conditions["pop"]["value"] != None else "0"
         
         # check severity of uv index
+        #TODO This can be simplified
         if locale.conditions["uv_index"]["value"] != None:
             if locale.conditions["uv_index"]["value"] <= 2:
                 uv_cat = "LOW"
@@ -105,7 +106,8 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
         else:
             visibstr = "VISBY    -- KM         "
      
-        # create 8 lines of text     
+        # create 8 lines of text
+        #TODO This can be converted to a for loop
         s1 = (LocaleName + " " + real_forecast_time + " " + str(local_tz) + "  " + real_forecast_date.upper()).center(35," ")
         s2 = "TEMP  " + temp_cur.rjust(5," ") + " C                "
         s2 = s2[0:24] + " HIGH " + temp_high.rjust(3," ") + " C"
@@ -224,53 +226,54 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
         s3 = ""
         s4 = "                 LOW    HIGH"
         s5 = "        TODAY   " + temp_low.rjust(3," ") + " C  " + temp_high.rjust(3," ") + " C"
-        s6 = "    YESTERDAY   " + temp_yest_low.rjust(3," ") + " C  " + temp_yest_high.rjust(3," ") + " C"
-        s7 = "       NORMAL   " + temp_norm_low.rjust(3," ") + " C  " + temp_norm_high.rjust(3," ") + " C"
+        #s6 = "    YESTERDAY   " + temp_yest_low.rjust(3," ") + " C  " + temp_yest_high.rjust(3," ") + " C"
+        s6 = "       NORMAL   " + temp_norm_low.rjust(3," ") + " C  " + temp_norm_high.rjust(3," ") + " C"
+        s7 = ""
         s8 = ""
     
     elif (PageNum == 6):    
     
         # ===================== Screen 6 =====================
-        # Manitoba and Regional Temperatures & Conditions
+        # Alberta and Regional Temperatures & Conditions
         debug_msg(("WEATHER_PAGE-display page " + str(PageNum)),2)
 
         day = days[datetime.datetime.today().weekday()]
-        month = str(months[(ec_en_wpg.forecast_time.month)])         
-        daynum = str(ec_en_wpg.forecast_time.day)
-        year = str(ec_en_wpg.forecast_time.year)
+        month = str(months[(locale.forecast_time.month)])         
+        daynum = str(locale.forecast_time.day)
+        year = str(locale.forecast_time.year)
  
-        temp_brn = str(ec_en_brn.conditions["temperature"]["value"])
-        temp_thm = str(ec_en_thm.conditions["temperature"]["value"])
-        temp_tps = str(ec_en_tps.conditions["temperature"]["value"])    
-        temp_fln = str(ec_en_fln.conditions["temperature"]["value"])  
-        temp_chu = str(ec_en_chu.conditions["temperature"]["value"]) 
-        temp_ken = str(ec_en_ken.conditions["temperature"]["value"])  
-        temp_tby = str(ec_en_tby.conditions["temperature"]["value"])   
+        temp_fmc = str(locale.conditions["temperature"]["value"])
+        temp_gpr = str(ec_en_gpr.conditions["temperature"]["value"])
+        temp_lyd = str(ec_en_lyd.conditions["temperature"]["value"])    
+        temp_red = str(ec_en_red.conditions["temperature"]["value"])  
+        temp_cal = str(ec_en_cal.conditions["temperature"]["value"]) 
+        temp_hat = str(ec_en_hat.conditions["temperature"]["value"])  
+        temp_lth = str(ec_en_lth.conditions["temperature"]["value"])   
 
-        cond_brn = (ec_en_brn.conditions["condition"]["value"]) if ("value" in ec_en_brn.conditions["condition"] and ec_en_brn.conditions["condition"]["value"] != None) else " "
-        cond_thm = (ec_en_thm.conditions["condition"]["value"]) if ("value" in ec_en_thm.conditions["condition"] and ec_en_thm.conditions["condition"]["value"] != None) else " "   
-        cond_tps = (ec_en_tps.conditions["condition"]["value"]) if ("value" in ec_en_tps.conditions["condition"] and ec_en_tps.conditions["condition"]["value"] != None) else " "
-        cond_fln = (ec_en_fln.conditions["condition"]["value"]) if ("value" in ec_en_fln.conditions["condition"] and ec_en_fln.conditions["condition"]["value"] != None) else " "
-        cond_chu = (ec_en_chu.conditions["condition"]["value"]) if ("value" in ec_en_chu.conditions["condition"] and ec_en_chu.conditions["condition"]["value"] != None) else " "
-        cond_ken = (ec_en_ken.conditions["condition"]["value"]) if ("value" in ec_en_ken.conditions["condition"] and ec_en_ken.conditions["condition"]["value"] != None) else " "
-        cond_tby = (ec_en_tby.conditions["condition"]["value"]) if ("value" in ec_en_tby.conditions["condition"] and ec_en_tby.conditions["condition"]["value"] != None) else " "
+        cond_fmc = (ec_en_fmc.conditions["condition"]["value"]) if ("value" in ec_en_fmc.conditions["condition"] and ec_en_fmc.conditions["condition"]["value"] != None) else " "
+        cond_gpr = (ec_en_gpr.conditions["condition"]["value"]) if ("value" in ec_en_gpr.conditions["condition"] and ec_en_gpr.conditions["condition"]["value"] != None) else " "   
+        cond_lyd = (ec_en_lyd.conditions["condition"]["value"]) if ("value" in ec_en_lyd.conditions["condition"] and ec_en_lyd.conditions["condition"]["value"] != None) else " "
+        cond_red = (ec_en_red.conditions["condition"]["value"]) if ("value" in ec_en_red.conditions["condition"] and ec_en_red.conditions["condition"]["value"] != None) else " "
+        cond_cal = (ec_en_cal.conditions["condition"]["value"]) if ("value" in ec_en_cal.conditions["condition"] and ec_en_cal.conditions["condition"]["value"] != None) else " "
+        cond_hat = (ec_en_hat.conditions["condition"]["value"]) if ("value" in ec_en_hat.conditions["condition"] and ec_en_hat.conditions["condition"]["value"] != None) else " "
+        cond_lth = (ec_en_lth.conditions["condition"]["value"]) if ("value" in ec_en_lth.conditions["condition"] and ec_en_lth.conditions["condition"]["value"] != None) else " "
         
         # create 8 lines of text   
         s1=(real_forecast_date.upper()).center(35," ")
-        s2="BRANDON     " + temp_brn.rjust(5," ") + " C    "
-        s2= s2[0:20] + word_short(cond_brn,13)[0:13]
-        s3="THE PAS     " + temp_tps.rjust(5," ") + " C     "
-        s3= s3[0:20] + word_short(cond_tps,13)[0:13]
-        s4="FLIN FLON   " + temp_fln.rjust(5," ") + " C     "
-        s4= s4[0:20] + word_short(cond_fln,13)[0:13]
-        s5="THOMPSON    " + temp_thm.rjust(5," ") + " C     "
-        s5= s5[0:20] + word_short(cond_thm,13)[0:13]
-        s6="CHURCHILL   " + temp_chu.rjust(5," ") + " C     "
-        s6= s6[0:20] + word_short(cond_chu,13)[0:13]
-        s7="KENORA      " + temp_ken.rjust(5," ") + " C     "
-        s7= s7[0:20] + word_short(cond_ken,13)[0:13]
-        s8="THUNDER BAY " + temp_tby.rjust(5," ") + " C     "
-        s8= s8[0:20] + word_short(cond_tby,13)[0:13]
+        s2="FT MCMURRAY " + temp_fmc.rjust(5," ") + " C    "
+        s2= s2[0:20] + word_short(cond_fmc,13)[0:13]
+        s3="GR. PRAIRIE " + temp_gpr.rjust(5," ") + " C     "
+        s3= s3[0:20] + word_short(cond_gpr,13)[0:13]
+        s4="LLOYDMINSTER" + temp_lyd.rjust(5," ") + " C     "
+        s4= s4[0:20] + word_short(cond_lyd,13)[0:13]
+        s5="RED DEER    " + temp_red.rjust(5," ") + " C     "
+        s5= s5[0:20] + word_short(cond_red,13)[0:13]
+        s6="CALGARY     " + temp_cal.rjust(5," ") + " C     "
+        s6= s6[0:20] + word_short(cond_cal,13)[0:13]
+        s7="MEDICINE HAT" + temp_hat.rjust(5," ") + " C     "
+        s7= s7[0:20] + word_short(cond_hat,13)[0:13]
+        s8="LETHBRIDGE  " + temp_lth.rjust(5," ") + " C     "
+        s8= s8[0:20] + word_short(cond_lth,13)[0:13]
 
     elif (PageNum == 7):
     
@@ -279,13 +282,13 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
         debug_msg(("WEATHER_PAGE-display page " + str(PageNum)),2) 
         
         day = days[datetime.datetime.today().weekday()]
-        month = str(months[(ec_en_wpg.forecast_time.month)])         
-        daynum = str(ec_en_wpg.forecast_time.day)
-        year = str(ec_en_wpg.forecast_time.year)
+        month = str(months[(locale.forecast_time.month)])         
+        daynum = str(locale.forecast_time.day)
+        year = str(locale.forecast_time.year)
  
         temp_vic = str(ec_en_vic.conditions["temperature"]["value"])
         temp_van = str(ec_en_van.conditions["temperature"]["value"])
-        temp_edm = str(ec_en_edm.conditions["temperature"]["value"])    
+        temp_wpg = str(ec_en_wpg.conditions["temperature"]["value"])    
         temp_cal = str(ec_en_cal.conditions["temperature"]["value"])  
         temp_ssk = str(ec_en_ssk.conditions["temperature"]["value"])  
         temp_reg = str(ec_en_reg.conditions["temperature"]["value"])   
@@ -293,7 +296,7 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
 
         cond_vic = (ec_en_vic.conditions["condition"]["value"]) if ("value" in ec_en_vic.conditions["condition"] and ec_en_vic.conditions["condition"]["value"] != None) else " "
         cond_van = (ec_en_van.conditions["condition"]["value"])[0:13] if ("value" in ec_en_van.conditions["condition"] and ec_en_van.conditions["condition"]["value"] != None) else " "   
-        cond_edm = (ec_en_edm.conditions["condition"]["value"])[0:13] if ("value" in ec_en_edm.conditions["condition"] and ec_en_edm.conditions["condition"]["value"] != None) else " "
+        cond_wpg = (ec_en_wpg.conditions["condition"]["value"])[0:13] if ("value" in ec_en_wpg.conditions["condition"] and ec_en_wpg.conditions["condition"]["value"] != None) else " "
         cond_cal = (ec_en_cal.conditions["condition"]["value"])[0:13] if ("value" in ec_en_cal.conditions["condition"] and ec_en_cal.conditions["condition"]["value"] != None) else " "
         cond_ssk = (ec_en_ssk.conditions["condition"]["value"])[0:13] if ("value" in ec_en_ssk.conditions["condition"] and ec_en_ssk.conditions["condition"]["value"] != None) else " "
         cond_reg = (ec_en_reg.conditions["condition"]["value"])[0:13] if ("value" in ec_en_reg.conditions["condition"] and ec_en_reg.conditions["condition"]["value"] != None) else " "
@@ -305,14 +308,14 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
         s2= s2[0:20] + word_short(cond_vic,13)[0:13]
         s3="VANCOUVER   " + temp_van.rjust(5," ") + " C     "
         s3= s3[0:20] + word_short(cond_van,13)[0:13]
-        s4="EDMONTON    " + temp_edm.rjust(5," ") + " C     "
-        s4= s4[0:20] + word_short(cond_edm,13)[0:13]
-        s5="CALGARY     " + temp_cal.rjust(5," ") + " C     "
-        s5= s5[0:20] + word_short(cond_cal,13)[0:13]
-        s6="SASKATOON   " + temp_ssk.rjust(5," ") + " C     "
-        s6= s6[0:20] + word_short(cond_ssk,13)[0:13]
-        s7="REGINA      " + temp_reg.rjust(5," ") + " C     "
-        s7= s7[0:20] + word_short(cond_reg,13)[0:13]
+        s7="WINNIPEG    " + temp_wpg.rjust(5," ") + " C     "
+        s7= s7[0:20] + word_short(cond_wpg,13)[0:13]
+        s4="CALGARY     " + temp_cal.rjust(5," ") + " C     "
+        s4= s4[0:20] + word_short(cond_cal,13)[0:13]
+        s5="SASKATOON   " + temp_ssk.rjust(5," ") + " C     "
+        s5= s5[0:20] + word_short(cond_ssk,13)[0:13]
+        s6="REGINA      " + temp_reg.rjust(5," ") + " C     "
+        s6= s6[0:20] + word_short(cond_reg,13)[0:13]
         s8="WHITEHORSE  " + temp_wht.rjust(5," ") + " C     "
         s8= s8[0:20] + word_short(cond_wht,13)[0:13]
              
@@ -323,9 +326,9 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
         debug_msg(("WEATHER_PAGE-display page " + str(PageNum)),2)
         
         day = days[datetime.datetime.today().weekday()]
-        month = str(months[(ec_en_wpg.forecast_time.month)])         
-        daynum = str(ec_en_wpg.forecast_time.day)
-        year = str(ec_en_wpg.forecast_time.year)
+        month = str(months[(locale.forecast_time.month)])         
+        daynum = str(locale.forecast_time.day)
+        year = str(locale.forecast_time.year)
  
         temp_tor = str(ec_en_tor.conditions["temperature"]["value"])
         temp_otw = str(ec_en_otw.conditions["temperature"]["value"])
@@ -406,22 +409,23 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
     
         precipA = (str(ec_en_edm.conditions["pop"]["value"]) + " %") if ec_en_edm.conditions["pop"] and ec_en_edm.conditions["pop"]["value"] != None else "NIL"
         precipB = (str(ec_en_cal.conditions["pop"]["value"]) + " %") if ec_en_cal.conditions["pop"] and ec_en_cal.conditions["pop"]["value"] != None else "NIL"
-        precipC = (str(ec_en_tps.conditions["pop"]["value"]) + " %") if ec_en_tps.conditions["pop"] and ec_en_tps.conditions["pop"]["value"] != None else "NIL"
-        precipD = (str(ec_en_fln.conditions["pop"]["value"]) + " %") if ec_en_fln.conditions["pop"] and ec_en_fln.conditions["pop"]["value"] != None else "NIL"
-        precipE = (str(ec_en_thm.conditions["pop"]["value"]) + " %") if ec_en_thm.conditions["pop"] and ec_en_thm.conditions["pop"]["value"] != None else "NIL"
-        precipF = (str(ec_en_chu.conditions["pop"]["value"]) + " %") if ec_en_chu.conditions["pop"] and ec_en_chu.conditions["pop"]["value"] != None else "NIL"
+        precipC = (str(ec_en_fmc.conditions["pop"]["value"]) + " %") if ec_en_fmc.conditions["pop"] and ec_en_fmc.conditions["pop"]["value"] != None else "NIL"
+        precipD = (str(ec_en_gpr.conditions["pop"]["value"]) + " %") if ec_en_gpr.conditions["pop"] and ec_en_gpr.conditions["pop"]["value"] != None else "NIL"
+        precipE = (str(ec_en_red.conditions["pop"]["value"]) + " %") if ec_en_red.conditions["pop"] and ec_en_red.conditions["pop"]["value"] != None else "NIL"
+        precipF = (str(ec_en_hat.conditions["pop"]["value"]) + " %") if ec_en_hat.conditions["pop"] and ec_en_hat.conditions["pop"]["value"] != None else "NIL"
+        precipG = (str(ec_en_lth.conditions["pop"]["value"]) + " %") if ec_en_lth.conditions["pop"] and ec_en_lth.conditions["pop"]["value"] != None else "NIL"
         yest_precip = ""
         #yest_precip = (str(ec_en_wpg.conditions["precip_yesterday"]["value"]) + " MM") if ec_en_wpg.conditions["precip_yesterday"] and ec_en_wpg.conditions["precip_yesterday"]["value"] != None else "0.0 MM"
     
         # create 8 lines of text   
         s1 = ("ALBERTA PRECIPITATION FORECAST").center(35," ")
-        s2 = "    TODAY EDMONTON  " + (precipA).rjust(5," ")
-        s3 = "          CALGARY   " + (precipB).rjust(5," ")
-        s4 = "          THE PAS   " + (precipC).rjust(5," ")
-        s5 = "          FLIN FLON " + (precipD).rjust(5," ")
-        s6 = "          THOMPSON  " + (precipE).rjust(5," ")
-        s7 = "          CHURCHILL " + (precipF).rjust(5," ")
-        s8 = ""
+        s2 = "  TODAY EDMONTON    " + (precipA).rjust(5," ")
+        s3 = "        CALGARY     " + (precipB).rjust(5," ")
+        s4 = "        FT. MCMURRAY" + (precipC).rjust(5," ")
+        s5 = "        GR. PRAIRIE " + (precipD).rjust(5," ")
+        s6 = "        RED DEER    " + (precipE).rjust(5," ")
+        s7 = "        MEDICINE HAT" + (precipF).rjust(5," ")
+        s8 = "        LETHBRIDGE  " + (precipG).rjust(5," ")
         #s8 = " PREV DAY WINNIPEG  " + (yest_precip).rjust(7," ")
 
     elif (PageNum == 11):    
@@ -495,6 +499,13 @@ def weather_update(group):
                 asyncio.run(ec_en_chu.update()) 
                 asyncio.run(ec_en_ken.update()) 
                 asyncio.run(ec_en_tby.update())
+                # Alberta
+                asyncio.run(ec_en_fmc.update())
+                asyncio.run(ec_en_gpr.update())
+                asyncio.run(ec_en_red.update())
+                asyncio.run(ec_en_lyd.update())
+                asyncio.run(ec_en_lth.update())
+                asyncio.run(ec_en_hat.update())
                 real_forecast_time = time.strftime("%-I %p") # this is used as the forecast time when showing the weather. for some reason the dictionary was always reporting 22:00 for forecast time
                 if real_forecast_time == "12 PM": 
                     real_forecast_time = "NOON" # just to add some fun
@@ -781,6 +792,14 @@ ec_en_qbc = ECWeather(station_id='QC/s0000620', language='english')
 ec_en_frd = ECWeather(station_id='NB/s0000250', language='english')
 ec_en_hal = ECWeather(station_id='NS/s0000318', language='english')
 ec_en_stj = ECWeather(station_id='NL/s0000280', language='english')
+
+# Alberta Cities
+ec_en_fmc = ECWeather(station_id='AB/s0000595', language='english')
+ec_en_gpr = ECWeather(station_id='AB/s0000661', language='english')
+ec_en_red = ECWeather(station_id='AB/s0000645', language='english')
+ec_en_lyd = ECWeather(station_id='AB/s0000590', language='english')
+ec_en_lth = ECWeather(station_id='AB/s0000652', language='english')
+ec_en_hat = ECWeather(station_id='AB/s0000745', language='english')
 
 # total number of groups broken up to update sections of weather data, to keep update time short
 grouptotal = 3 
