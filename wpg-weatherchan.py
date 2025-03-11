@@ -17,10 +17,10 @@ import random # for background music
 import os # for background music
 import re # for word shortener
 
-musicpath = "/home/mikeb/Music" # must show full path
+musicpath = "/home/mikeb/wpg-weatherchan/music" # folder for background music
 
 prog = "wpg-weather"
-ver = "2.0.9"
+ver = "2.0.10"
 
 # DEF clock Updater
 def clock():
@@ -140,7 +140,7 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
         text_forecast = wsum_day1 + linebreak + wsum_day2 + linebreak + wsum_day3 + linebreak + wsum_day4 + linebreak + wsum_day5 + linebreak + wsum_day6
     
         # create 8 lines of text
-        s1 = LocaleName + " CITY FORECAST".center(35," ")
+        s1 = (LocaleName + " CITY FORECAST").center(35," ")
         s2 = (text_forecast[0]).center(35," ") if len(text_forecast) >= 1 else " "
         s3 = (text_forecast[1]).center(35," ") if len(text_forecast) >= 2 else " "
         s4 = (text_forecast[2]).center(35," ") if len(text_forecast) >= 3 else " "
@@ -157,7 +157,7 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
         debug_msg(("WEATHER_PAGE-display page " + str(PageNum)),2) 
         
         # create 8 lines of text
-        s1 = LocaleName + " CITY FORECAST CONT'D".center(35," ")
+        s1 = (LocaleName + " CITY FORECAST CONT'D").center(35," ")
         s2 = (text_forecast[7]).center(35," ") if len(text_forecast) >= 8 else " "
         s3 = (text_forecast[8]).center(35," ") if len(text_forecast) >= 9 else " "
         s4 = (text_forecast[9]).center(35," ") if len(text_forecast) >= 10 else " "
@@ -184,7 +184,7 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
             debug_msg(("WEATHER_PAGE-display page " + str(PageNum)),2)   
         
             # create 8 lines of text       
-            s1 = LocaleName + " CITY FORECAST CONT'D".center(35," ")
+            s1 = (LocaleName + " CITY FORECAST CONT'D").center(35," ")
             s2 = (text_forecast[14]).center(35," ") if len(text_forecast) >= 15 else " "       
             s3 = (text_forecast[15]).center(35," ") if len(text_forecast) >= 16 else " "        
             s4 = (text_forecast[16]).center(35," ") if len(text_forecast) >= 17 else " "
@@ -289,7 +289,7 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
         temp_vic = str(ec_en_vic.conditions["temperature"]["value"])
         temp_van = str(ec_en_van.conditions["temperature"]["value"])
         temp_wpg = str(ec_en_wpg.conditions["temperature"]["value"])    
-        temp_cal = str(ec_en_cal.conditions["temperature"]["value"])  
+        temp_kel = str(ec_en_kel.conditions["temperature"]["value"])  
         temp_ssk = str(ec_en_ssk.conditions["temperature"]["value"])  
         temp_reg = str(ec_en_reg.conditions["temperature"]["value"])   
         temp_wht = str(ec_en_wht.conditions["temperature"]["value"]) 
@@ -297,7 +297,7 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
         cond_vic = (ec_en_vic.conditions["condition"]["value"]) if ("value" in ec_en_vic.conditions["condition"] and ec_en_vic.conditions["condition"]["value"] != None) else " "
         cond_van = (ec_en_van.conditions["condition"]["value"])[0:13] if ("value" in ec_en_van.conditions["condition"] and ec_en_van.conditions["condition"]["value"] != None) else " "   
         cond_wpg = (ec_en_wpg.conditions["condition"]["value"])[0:13] if ("value" in ec_en_wpg.conditions["condition"] and ec_en_wpg.conditions["condition"]["value"] != None) else " "
-        cond_cal = (ec_en_cal.conditions["condition"]["value"])[0:13] if ("value" in ec_en_cal.conditions["condition"] and ec_en_cal.conditions["condition"]["value"] != None) else " "
+        cond_kel = (ec_en_kel.conditions["condition"]["value"])[0:13] if ("value" in ec_en_kel.conditions["condition"] and ec_en_kel.conditions["condition"]["value"] != None) else " "
         cond_ssk = (ec_en_ssk.conditions["condition"]["value"])[0:13] if ("value" in ec_en_ssk.conditions["condition"] and ec_en_ssk.conditions["condition"]["value"] != None) else " "
         cond_reg = (ec_en_reg.conditions["condition"]["value"])[0:13] if ("value" in ec_en_reg.conditions["condition"] and ec_en_reg.conditions["condition"]["value"] != None) else " "
         cond_wht = (ec_en_wht.conditions["condition"]["value"])[0:13] if ("value" in ec_en_wht.conditions["condition"] and ec_en_wht.conditions["condition"]["value"] != None) else " "
@@ -310,8 +310,8 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
         s3= s3[0:20] + word_short(cond_van,13)[0:13]
         s7="WINNIPEG    " + temp_wpg.rjust(5," ") + " C     "
         s7= s7[0:20] + word_short(cond_wpg,13)[0:13]
-        s4="CALGARY     " + temp_cal.rjust(5," ") + " C     "
-        s4= s4[0:20] + word_short(cond_cal,13)[0:13]
+        s4="KELOWNA     " + temp_kel.rjust(5," ") + " C     "
+        s4= s4[0:20] + word_short(cond_kel,13)[0:13]
         s5="SASKATOON   " + temp_ssk.rjust(5," ") + " C     "
         s5= s5[0:20] + word_short(cond_ssk,13)[0:13]
         s6="REGINA      " + temp_reg.rjust(5," ") + " C     "
@@ -520,7 +520,8 @@ def weather_update(group):
                 
             if (group == 0 or group == 2):
                 asyncio.run(ec_en_vic.update()) 
-                asyncio.run(ec_en_van.update()) 
+                asyncio.run(ec_en_van.update())
+                asyncio.run(ec_en_kel.update())
                 asyncio.run(ec_en_edm.update()) 
                 asyncio.run(ec_en_cal.update()) 
                 asyncio.run(ec_en_ssk.update()) 
@@ -573,7 +574,6 @@ def bottom_marquee(grouptotal):
         pad = pad + " " 
 
     #url = "https://winnipeg.ctvnews.ca/rss/winnipeg"
-    #url = "http://rebelnews.com/news.rss"
     url = "http://globalnews.ca/edmonton/feed"
     wpg = feedparser.parse(url)
     debug_msg("BOTTOM_MARQUEE-RSS feed refreshed",1)
@@ -629,7 +629,25 @@ def bottom_marquee(grouptotal):
                     
                 p = 0 # keep the for loop from ending
                 wpg = feedparser.parse(url)
-                debug_msg("BOTTOM_MARQUEE-RSS feed refreshed",1)
+
+                # Add first entry to string without padding
+                wpg_desc = pad + wpg.entries[0]["description"]
+                # Append all other RSS entry descriptions, with 35 character padding in between
+                for n in range(len(wpg.entries)):
+                    if (n == 0) or ((len(wpg_desc + pad + wpg.entries[n]["description"]) * 24) >= 31000): 
+                    # avoid duplicate first entry / check if string will be max pixels allowed
+                        n = n + 1
+                    else:
+                        wpg_desc = wpg_desc + pad + wpg.entries[n]["description"]
+                # convert to upper case
+                mrq_msg = wpg_desc.upper()
+                # use the length of the news feeds to determine the total pixels in the scrolling section
+                marquee_length = len(mrq_msg)
+                pixels = marquee_length * 24 # roughly 24px per char
+                # setup scrolling text
+                text = marquee.create_text(1, 2, anchor='nw', text=pad + mrq_msg + pad, font=('VCR OSD Mono', 25,), fill="white")
+
+                debug_msg("BOTTOM_MARQUEE-RSS feed refreshed inside while loop",1)
 
 # DEF generate playlist from folder
 def playlist_generator(musicpath):
@@ -778,6 +796,7 @@ ec_en_tby = ECWeather(station_id='ON/s0000411', language='english')
 # group 2
 ec_en_vic = ECWeather(station_id='BC/s0000775', language='english')
 ec_en_van = ECWeather(station_id='BC/s0000141', language='english')
+ec_en_kel = ECWeather(station_id='BC/s0000592', language='english')
 ec_en_edm = ECWeather(station_id='AB/s0000045', language='english')
 ec_en_cal = ECWeather(station_id='AB/s0000047', language='english')
 ec_en_ssk = ECWeather(station_id='SK/s0000797', language='english')
@@ -824,12 +843,13 @@ weather_page(PageColour, PageNum, ec_en_edm, "EDMONTON")
 # Generate background music playlist
 debug_msg("ROOT-launching playlist generator",1)
 playlist = playlist_generator(musicpath) # generate playlist array
-#random.shuffle(playlist) # shuffle playlist
+random.shuffle(playlist) # shuffle playlist
 
 # Play background music on shuffle using pygame
 debug_msg("ROOT-launching background music",1)
 songNumber = 1
-pygame.mixer.init()
+pygame.mixer.pre_init(buffer=4096) # Maybe this will solve the glitchy music issue...
+pygame.mixer.init(channels=1) # channels=1 should give us mono output
 music_player(songNumber, playlist, musicpath)
 
 # Bottom Scrolling Text (City of Winnipeg RSS Feed)
