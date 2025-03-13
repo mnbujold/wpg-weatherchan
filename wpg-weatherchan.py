@@ -567,23 +567,29 @@ def bottom_marquee(grouptotal):
     marquee.config(highlightbackground="green")
     marquee.place(x=80, y=400)
 
-    # read in RSS data and prepare it
+    #create an empty string of 35 characters
     width = 35
     pad = ""
-    for r in range(width): #create an empty string of 35 characters
+    for r in range(width):
         pad = pad + " " 
 
+
+    # read in RSS data and prepare it
     #url = "https://winnipeg.ctvnews.ca/rss/winnipeg"
     url = "http://globalnews.ca/edmonton/feed"
     wpg = feedparser.parse(url)
     debug_msg("BOTTOM_MARQUEE-RSS feed refreshed",1)
 
     # Add first entry to string without padding
-    wpg_desc = pad + wpg.entries[0]["description"]
+    wpg_desc = wpg.entries[0]["description"]
+    debug_msg("BOTTOM_MARQUEE-Number RSS entries = " + str(len(wpg.entries)),1)
     
     # Append all other RSS entry descriptions, with 35 character padding in between
+    #rss_max = 31000 # max pixel length of RSS scroll
+    rss_max = 42000
     for n in range(len(wpg.entries)):
-        if (n == 0) or ((len(wpg_desc + pad + wpg.entries[n]["description"]) * 24) >= 31000): # avoid duplicate first entry / check if string will be max pixels allowed
+        if (n == 0) or ((len(wpg_desc + pad + wpg.entries[n]["description"]) * 24) >= rss_max): 
+            # avoid duplicate first entry / check if string will be max pixels allowed
             n = n + 1
         else:
             wpg_desc = wpg_desc + pad + wpg.entries[n]["description"]
@@ -594,21 +600,24 @@ def bottom_marquee(grouptotal):
     # use the length of the news feeds to determine the total pixels in the scrolling section
     marquee_length = len(mrq_msg)
     pixels = marquee_length * 24 # roughly 24px per char
-
+    debug_msg("BOTTOM_MARQUEE-Length in pixels = " + str(pixels),1)
+    
     # setup scrolling text
     text = marquee.create_text(1, 2, anchor='nw', text=pad + mrq_msg + pad, font=('VCR OSD Mono', 25,), fill="white")
 
-    restart_marquee = True # 
+    restart_marquee = True
     while restart_marquee:
         restart_marquee = False
         debug_msg("BOTTOM_MARQUEE-starting RSS display",1)
-        for p in range(pixels+730):
+        for p in range(pixels+730): # why pixels+730? to leave a gap at the end?
             marquee.move(text, -1, 0) #shift the canvas to the left by 1 pixel
             marquee.update()
             time.sleep(0.002) # scroll every 2ms
             if (p == pixels+729): # once the canvas has finished scrolling
                 restart_marquee = True
-                marquee.move(text, pixels+729, 0) # reset the location
+                # reset the location
+                marquee.move(text, 80, 0)
+                # let's pop off a weather update here
                 if (group <= grouptotal):
                     debug_msg("BOTTOM_MARQUEE-launching weather update",1)
                     try:
@@ -628,10 +637,10 @@ def bottom_marquee(grouptotal):
                         debug_msg("BOTTOM_MARQUEE-ENV_CANADA_ERROR! weather info NOT refreshed",1)
                     
                 p = 0 # keep the for loop from ending
+                # Time to update RSS feed
                 wpg = feedparser.parse(url)
-
                 # Add first entry to string without padding
-                wpg_desc = pad + wpg.entries[0]["description"]
+                wpg_desc = wpg.entries[0]["description"]
                 # Append all other RSS entry descriptions, with 35 character padding in between
                 for n in range(len(wpg.entries)):
                     if (n == 0) or ((len(wpg_desc + pad + wpg.entries[n]["description"]) * 24) >= 31000): 
