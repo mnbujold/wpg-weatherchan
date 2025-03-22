@@ -17,6 +17,7 @@ import random # for background music
 import os # for background music
 import re # for word shortener
 
+
 musicpath = "/home/mikeb/wpg-weatherchan/music" # folder for background music
 
 prog = "wpg-weather"
@@ -107,7 +108,7 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
             visibstr = "VISBY    -- KM         "
      
         # create 8 lines of text
-        #TODO This can be converted to a for loop
+        #TODO: This should be an array
         s1 = (LocaleName + " " + real_forecast_time + " " + str(local_tz) + "  " + real_forecast_date.upper()).center(35," ")
         s2 = "TEMP  " + temp_cur.rjust(5," ") + " C                "
         s2 = s2[0:24] + " HIGH " + temp_high.rjust(3," ") + " C"
@@ -292,7 +293,7 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
         temp_kel = str(ec_en_kel.conditions["temperature"]["value"])  
         temp_ssk = str(ec_en_ssk.conditions["temperature"]["value"])  
         temp_reg = str(ec_en_reg.conditions["temperature"]["value"])   
-        temp_wht = str(ec_en_wht.conditions["temperature"]["value"]) 
+        temp_wht = str(ec_en_esv.conditions["temperature"]["value"]) 
 
         cond_vic = (ec_en_vic.conditions["condition"]["value"]) if ("value" in ec_en_vic.conditions["condition"] and ec_en_vic.conditions["condition"]["value"] != None) else " "
         cond_van = (ec_en_van.conditions["condition"]["value"])[0:13] if ("value" in ec_en_van.conditions["condition"] and ec_en_van.conditions["condition"]["value"] != None) else " "   
@@ -300,7 +301,7 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
         cond_kel = (ec_en_kel.conditions["condition"]["value"])[0:13] if ("value" in ec_en_kel.conditions["condition"] and ec_en_kel.conditions["condition"]["value"] != None) else " "
         cond_ssk = (ec_en_ssk.conditions["condition"]["value"])[0:13] if ("value" in ec_en_ssk.conditions["condition"] and ec_en_ssk.conditions["condition"]["value"] != None) else " "
         cond_reg = (ec_en_reg.conditions["condition"]["value"])[0:13] if ("value" in ec_en_reg.conditions["condition"] and ec_en_reg.conditions["condition"]["value"] != None) else " "
-        cond_wht = (ec_en_wht.conditions["condition"]["value"])[0:13] if ("value" in ec_en_wht.conditions["condition"] and ec_en_wht.conditions["condition"]["value"] != None) else " "
+        cond_wht = (ec_en_esv.conditions["condition"]["value"])[0:13] if ("value" in ec_en_esv.conditions["condition"] and ec_en_esv.conditions["condition"]["value"] != None) else " "
         
         # create 8 lines of text    
         s1=(real_forecast_date.upper()).center(35," ")
@@ -308,16 +309,18 @@ def weather_page(PageColour, PageNum, locale, LocaleName):
         s2= s2[0:20] + word_short(cond_vic,13)[0:13]
         s3="VANCOUVER   " + temp_van.rjust(5," ") + " C     "
         s3= s3[0:20] + word_short(cond_van,13)[0:13]
-        s7="WINNIPEG    " + temp_wpg.rjust(5," ") + " C     "
-        s7= s7[0:20] + word_short(cond_wpg,13)[0:13]
         s4="KELOWNA     " + temp_kel.rjust(5," ") + " C     "
         s4= s4[0:20] + word_short(cond_kel,13)[0:13]
         s5="SASKATOON   " + temp_ssk.rjust(5," ") + " C     "
         s5= s5[0:20] + word_short(cond_ssk,13)[0:13]
         s6="REGINA      " + temp_reg.rjust(5," ") + " C     "
         s6= s6[0:20] + word_short(cond_reg,13)[0:13]
-        s8="WHITEHORSE  " + temp_wht.rjust(5," ") + " C     "
-        s8= s8[0:20] + word_short(cond_wht,13)[0:13]
+        s7="ESTEVAN     " + temp_wht.rjust(5," ") + " C     "
+        s7= s7[0:20] + word_short(cond_wht,13)[0:13]
+        s8="WINNIPEG    " + temp_wpg.rjust(5," ") + " C     "
+        s8= s8[0:20] + word_short(cond_wpg,13)[0:13]
+        #s8="WHITEHORSE  " + temp_wht.rjust(5," ") + " C     "
+        #s8= s8[0:20] + word_short(cond_wht,13)[0:13]
              
     elif (PageNum == 8):   
     
@@ -506,6 +509,7 @@ def weather_update(group):
                 asyncio.run(ec_en_lyd.update())
                 asyncio.run(ec_en_lth.update())
                 asyncio.run(ec_en_hat.update())
+                asyncio.run(ec_en_esv.update())
                 real_forecast_time = time.strftime("%-I %p") # this is used as the forecast time when showing the weather. for some reason the dictionary was always reporting 22:00 for forecast time
                 if real_forecast_time == "12 PM": 
                     real_forecast_time = "NOON" # just to add some fun
@@ -585,8 +589,8 @@ def bottom_marquee(grouptotal):
     debug_msg("BOTTOM_MARQUEE-Number RSS entries = " + str(len(wpg.entries)),1)
     
     # Append all other RSS entry descriptions, with 35 character padding in between
-    #rss_max = 31000 # max pixel length of RSS scroll
-    rss_max = 42000
+    rss_max = 31000 # max pixel length of RSS scroll
+    #rss_max = 42000 #TODO: This length seems to cause the feed to stall, so I need to look at this
     for n in range(len(wpg.entries)):
         if (n == 0) or ((len(wpg_desc + pad + wpg.entries[n]["description"]) * 24) >= rss_max): 
             # avoid duplicate first entry / check if string will be max pixels allowed
@@ -640,7 +644,10 @@ def bottom_marquee(grouptotal):
                 # Time to update RSS feed
                 wpg = feedparser.parse(url)
                 # Add first entry to string without padding
-                wpg_desc = wpg.entries[0]["description"]
+                try:
+                    wpg_desc = wpg.entries[0]["description"]
+                except:
+                    debug_msg("BOTTOM MARQUEE - no entries in RSS feed!",1)
                 # Append all other RSS entry descriptions, with 35 character padding in between
                 for n in range(len(wpg.entries)):
                     if (n == 0) or ((len(wpg_desc + pad + wpg.entries[n]["description"]) * 24) >= 31000): 
@@ -789,7 +796,7 @@ clock()
 debug_msg("ROOT-placing Title Text",1)
 Title = Label(root, text="ENVIRONMENT CANADA", font=("VCR OSD Mono", 22, "bold"), fg="white", bg="green")
 Title.place(x=80, y=40)
-
+#TODO Roll this into a dictionary
 # use ECWeather to gather weather data, station_id is from the csv file provided with ECDada -- homepage: https://github.com/michaeldavie/env_canada
 
 # group 1
@@ -829,6 +836,9 @@ ec_en_lyd = ECWeather(station_id='AB/s0000590', language='english')
 ec_en_lth = ECWeather(station_id='AB/s0000652', language='english')
 ec_en_hat = ECWeather(station_id='AB/s0000745', language='english')
 
+ec_en_esv = ECWeather(station_id='SK/s0000516', language='english')
+
+
 # total number of groups broken up to update sections of weather data, to keep update time short
 grouptotal = 3 
 
@@ -857,11 +867,11 @@ random.shuffle(playlist) # shuffle playlist
 # Play background music on shuffle using pygame
 debug_msg("ROOT-launching background music",1)
 songNumber = 1
-pygame.mixer.pre_init(buffer=4096) # Maybe this will solve the glitchy music issue...
+pygame.mixer.pre_init(buffer=4096) # This fixes the audio output where samples would get garbled
 pygame.mixer.init(channels=1) # channels=1 should give us mono output
 music_player(songNumber, playlist, musicpath)
 
-# Bottom Scrolling Text (City of Winnipeg RSS Feed)
+# Bottom Scrolling Text (Local News RSS Feed)
 debug_msg("ROOT-launching bottom_marquee",1)
 bottom_marquee(grouptotal)
 
